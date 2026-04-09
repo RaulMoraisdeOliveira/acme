@@ -8,11 +8,11 @@ import {
 } from '@/services/CustomerService';
 import { ApiError } from '@/types';
 
-const CreateCustomerSchema = z.object({
+export const CreateCustomerSchema = z.object({
   name: z
     .string({ required_error: 'O campo é obrigatório.' })
-    .min(1)
-    .max(100),
+    .min(1, 'O campo não pode estar vazio.')
+    .max(100, 'O campo deve ter no máximo 100 caracteres.'),
   email: z
     .string({ required_error: 'O campo é obrigatório.' })
     .email('O campo possui formato inválido.'),
@@ -21,7 +21,7 @@ const CreateCustomerSchema = z.object({
     .url('O campo possui formato inválido.')
 });
 
-const UpdateCustomerSchema = CreateCustomerSchema.partial();
+export const UpdateCustomerSchema = CreateCustomerSchema.partial();
 
 export type CreateCustomerDTO = z.infer<typeof CreateCustomerSchema>;
 export type UpdateCustomerDTO = z.infer<typeof UpdateCustomerSchema>;
@@ -30,8 +30,7 @@ function buildErrorResponse(
   message: string,
   details?: Record<string, string[]>
 ): ApiError {
-
-  if(details) {
+  if (details) {
     return { error: message, details };
   };
 
@@ -44,11 +43,9 @@ export const CustomerController = {
 
     const customers = await findAllCustomers({ search });
 
-    return {
-      status: 200,
-      body: customers
-    };
+    return { status: 200, body: customers };
   },
+
   async getById(id: string) {
     const customer = await findCustomerById(id);
 
@@ -59,11 +56,9 @@ export const CustomerController = {
       };
     };
 
-    return {
-      status: 200,
-      body: customer
-    };
+    return { status: 200, body: customer };
   },
+
   async create(data: unknown) {
     const parsed = CreateCustomerSchema.safeParse(data);
 
@@ -79,11 +74,9 @@ export const CustomerController = {
 
     const customer = await createCustomer(parsed.data);
 
-    return {
-      status: 201,
-      body: customer
-    };
+    return { status: 201, body: customer };
   },
+
   async update(id: string, data: unknown) {
     const existing = await findCustomerById(id);
 
@@ -108,11 +101,9 @@ export const CustomerController = {
 
     const customer = await updateCustomer(id, parsed.data);
 
-    return {
-      status: 200,
-      body: customer
-    };
+    return { status: 200, body: customer };
   },
+
   async remove(id: string) {
     const existing = await findCustomerById(id);
 
@@ -125,9 +116,6 @@ export const CustomerController = {
 
     await deleteCustomer(id);
 
-    return {
-      status: 200,
-      body: { message: 'Cliente removido com sucesso.' }
-    };
+    return { status: 200, body: { message: 'Cliente removido com sucesso.' } };
   }
 };
