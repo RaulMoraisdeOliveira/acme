@@ -41,7 +41,7 @@ export type SortOrder = 'asc' | 'desc';
 export interface FindAllCustomersParams {
   search?: string;
   page?: number;
-  limit: number;
+  limit?: number;
   sortBy?: string;
   order?: SortOrder;
 };
