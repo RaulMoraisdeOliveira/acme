@@ -36,6 +36,29 @@ export interface Revenue {
   revenue: number;
 };
 
+export type SortOrder = 'asc' | 'desc';
+
+export interface FindAllCustomersParams {
+  search?: string;
+  page?: number;
+  limit: number;
+  sortBy?: string;
+  order?: SortOrder;
+};
+
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasMore: boolean;
+};
+
+export interface PaginatedResponse<GENERIC> {
+  data: GENERIC[];
+  meta: PaginationMeta;
+};
+
 export interface ApiResponse<GENERIC> {
   data: GENERIC;
   message?: string; 
